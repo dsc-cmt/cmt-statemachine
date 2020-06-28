@@ -1,0 +1,22 @@
+# idea
+*.iml
+*.ipr
+*.iws
+/.idea
+
+# maven
+target
+
+# node modules
+node_modules
+.project
+.settings
+.classpath
+APP_HOME_IS_UNDEFINED
+catalina.base_IS_UNDEFINED
+version.vm
+version.vm
+
+**.DS_Store
+#PMD
+pmd-report
