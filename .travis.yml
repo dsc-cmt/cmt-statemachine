@@ -10,7 +10,7 @@ cache:
 install: true
 
 script:
-- mvn clean package install -DskipTests=true -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
+- mvn clean package install -Dmaven.javadoc.skip=true -Dgpg.skip -B -V
 
 after_success:
 - echo "build success!"
