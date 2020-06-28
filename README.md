@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/dsc-cmt/cmt-statemachine.svg?branch=master)](https://travis-ci.com/github/dsc-cmt/cmt-statemachine)
+
 **cmt-statemachine**【_草帽_】，是一个基于 [cola-statemachine](https://github.com/alibaba/COLA/tree/master/cola-statemachine) 的优化版状态机。
 
 **cmt-statemachine**新增特性：
