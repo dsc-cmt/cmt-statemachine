@@ -49,6 +49,8 @@ public class StateMachineFactory {
 ### 第四步 触发事件
 有三种的事件触发方式 适用于不同场景
 ```java
+@Autowired
+private StateMachine stateMachine;
 //1.仅获取下一个状态
 States next=stateMachine.fireEvent(States.STATE1, Operations.OPER1, new Req());
 //2.获取perform执行结果且不含条件,适用于不含when参数或者when条件参数与perform参数相同的情况
@@ -56,7 +58,7 @@ States next=stateMachine.fireEvent(States.STATE1, Operations.OPER1, new Req());
 //3.获取perform执行结果包含条件参数,适用于when条件参数与perform参数不一致的情况
  T t=stateMachine.fireEventWithResult(States.STATE1, Operations.OPER1, new Cond(), new Req());
 ```
-### com.cmt.statemachine.Action.execute方法的参数,可以实现stateAware接口,来获取下一个状态
+### com.cmt.statemachine.Action.execute方法的参数,可以实现stateAware接口或者继承DefaultStateAwareImpl<>,来获取下一个状态
 ```java
 class Req implements StateAware<States>{
     private States next;
@@ -65,5 +67,9 @@ class Req implements StateAware<States>{
         public void setNextState(States states) {
             this.next=states;
         }
+}
+
+class Req extends DefaultStateAwareImpl<States>{
+  
 }
 ```
