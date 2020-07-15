@@ -70,3 +70,17 @@ class Req implements StateAware<States>{
         }
 }
 ```
+## 如何根据配置的状态机生成 PlantUML 状态图
+### 第一步 执行 StateMachine 接口的 generatePlantUML 方法，得到 plantuml.txt 文件:
+```java
+public interface StateMachine<S, E> extends Visitable {
+    ...
+    /**
+     * generate plantUml state diagram.
+     */
+    void generatePlantUML();
+}
+```
+可以参考 StateMachinePlantUMLTest 单测类。
+### 第二步 下载 [plantuml.jar](https://plantuml.com/zh/),把第一步中的 plantuml.txt 文件和 plantuml.jar 放在同一目录下
+### 第三步 执行命令：java -jar plantuml.jar plantuml.txt
