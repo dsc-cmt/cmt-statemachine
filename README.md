@@ -83,4 +83,6 @@ public interface StateMachine<S, E> extends Visitable {
 ```
 可以参考 StateMachinePlantUMLTest 单测类。
 ### 第二步 下载 [plantuml.jar](https://plantuml.com/zh/),把第一步中的 plantuml.txt 文件和 plantuml.jar 放在同一目录下
-### 第三步 执行命令：java -jar plantuml.jar plantuml.txt
+### 第三步 下载安装[Graphviz](http://www.graphviz.org/),plantuml 绘制状态图依赖 Graphviz，参见[文档](http://wiki.plantuml.net/site/faq-install)
+### 第四步 在plantuml.txt所在目录下执行命令：java -jar plantuml.jar -verbose plantuml.txt，就会生成对应状态图
+
