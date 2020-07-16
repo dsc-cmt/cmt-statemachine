@@ -76,7 +76,7 @@ class Req implements StateAware<States>{
 public interface StateMachine<S, E> extends Visitable {
     ...
     /**
-     * generate plantUml state diagram.
+     * generate plantuml.txt which is used to generate the state diagram.
      */
     void generatePlantUML();
 }
