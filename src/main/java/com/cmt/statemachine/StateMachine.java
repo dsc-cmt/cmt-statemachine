@@ -53,5 +53,8 @@ public interface StateMachine<S, E> extends Visitable {
      */
     void showStateMachine();
 
+    /**
+     * generate plantUml state diagram.
+     */
     void generatePlantUML();
 }
