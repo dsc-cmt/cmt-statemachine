@@ -26,6 +26,8 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
 
     private boolean ready;
 
+    private S initialState;
+
     public StateMachineImpl(Map<S, State< S, E>> stateMap){
         this.stateMap = stateMap;
     }
@@ -127,6 +129,11 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
     }
 
     @Override
+    public S getInitialState() {
+        return initialState;
+    }
+
+    @Override
     public String getMachineId() {
         return machineId;
     }
@@ -135,7 +142,20 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
         this.machineId = machineId;
     }
 
+    /**
+     * Verify a state machine model.
+     */
+    public void verify() {
+        if (initialState == null) {
+            throw new StateMachineException("The state machine with id ["+machineId+"] has not set initial state");
+        }
+    }
+
     public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    public void setInitialState(S initialState) {
+        this.initialState = initialState;
     }
 }

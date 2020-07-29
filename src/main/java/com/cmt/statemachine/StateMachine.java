@@ -57,4 +57,11 @@ public interface StateMachine<S, E> extends Visitable {
      * generate plantUml state diagram.
      */
     void generatePlantUML();
+
+    /**
+     * Gets the initial state {@code S}.
+     *
+     * @return initial state
+     */
+    S getInitialState();
 }

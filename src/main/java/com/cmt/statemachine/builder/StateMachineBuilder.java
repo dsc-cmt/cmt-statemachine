@@ -29,4 +29,11 @@ public interface StateMachineBuilder<S, E> {
 
     StateMachine<S,E> build(String machineId);
 
+    /**
+     * Specify a initial state
+     *
+     * @param initial the initial state
+     * @return StateMachineBuilder
+     */
+    StateMachineBuilder<S, E> initialState(S initial);
 }
