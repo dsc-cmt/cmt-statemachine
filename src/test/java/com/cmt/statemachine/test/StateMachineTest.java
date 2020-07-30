@@ -54,7 +54,8 @@ public class StateMachineTest {
     @Test
     public void testExternalTransitionsNormal(){
         StateMachineBuilder<States, Events> builder = StateMachineBuilderFactory.create();
-        builder.externalTransitions()
+        builder.initialState(States.STATE1)
+                .externalTransitions()
                 .fromAmong(States.STATE1, States.STATE2, States.STATE3)
                 .to(States.STATE4)
                 .on(Events.EVENT1)
@@ -69,7 +70,8 @@ public class StateMachineTest {
     @Test
     public void testInternalNormal(){
         StateMachineBuilder<States, Events> builder = StateMachineBuilderFactory.create();
-        builder.internalTransition()
+        builder.initialState(States.STATE1)
+                .internalTransition()
                 .within(States.STATE1)
                 .on(Events.INTERNAL_EVENT)
                 .when(checkCondition())
@@ -98,7 +100,8 @@ public class StateMachineTest {
 
     private StateMachineFactory buildStateMachine(String machineId) {
         StateMachineBuilder<States, Events> builder = StateMachineBuilderFactory.create();
-        builder.externalTransition()
+        builder.initialState(States.STATE1)
+                .externalTransition()
                 .from(States.STATE1)
                 .to(States.STATE2)
                 .on(Events.EVENT1)

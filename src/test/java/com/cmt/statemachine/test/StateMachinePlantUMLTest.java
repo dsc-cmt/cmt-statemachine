@@ -92,7 +92,8 @@ public class StateMachinePlantUMLTest {
     public void testPlantUML(){
         StateMachineBuilder<PriceAdjustmentTaskStatusEnum, PriceAdjustmentTaskEventEnum> builder = StateMachineBuilderFactory.create();
 
-        builder.externalTransition()
+        builder.initialState(None)
+                .externalTransition()
                 .from(None)
                 .to(Supplier_Processing)
                 .on(Create)

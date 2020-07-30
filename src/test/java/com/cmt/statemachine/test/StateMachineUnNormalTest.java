@@ -20,7 +20,8 @@ public class StateMachineUnNormalTest {
     @Test
     public void testConditionNotMeet(){
         StateMachineBuilder<StateMachineTest.States, StateMachineTest.Events> builder = StateMachineBuilderFactory.create();
-        builder.externalTransition()
+        builder.initialState(StateMachineTest.States.STATE1)
+                .externalTransition()
                 .from(StateMachineTest.States.STATE1)
                 .to(StateMachineTest.States.STATE2)
                 .on(StateMachineTest.Events.EVENT1)
