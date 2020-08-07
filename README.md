@@ -37,7 +37,8 @@ public class StateMachineFactory {
     @Bean
     public StateMachine stateMachine(){
         StateMachineBuilder<States, Events> builder = StateMachineBuilderFactory.create();
-                builder.externalTransition()
+                builder.initialState(States.STATE1)
+                        .externalTransition()
                         .from(States.STATE1)
                         .to(States.STATE2)
                         .on(Events.EVENT1)
@@ -71,7 +72,7 @@ class Req implements StateAware<States>{
 }
 ```
 ## 如何根据配置的状态机生成 PlantUML 状态图
-### 第一步 执行 StateMachine 接口的 generatePlantUML 方法，得到 plantuml.txt 文件:
+### 执行 StateMachine 接口的 generatePlantUML 方法，得到 plantuml.txt 文件:
 ```java
 public interface StateMachine<S, E> extends Visitable {
     ...
@@ -82,7 +83,8 @@ public interface StateMachine<S, E> extends Visitable {
 }
 ```
 可以参考 StateMachinePlantUMLTest 单测类。
-### 第二步 下载 [plantuml.jar](https://plantuml.com/zh/),把第一步中的 plantuml.txt 文件和 plantuml.jar 放在同一目录下
-### 第三步 下载安装[Graphviz](http://www.graphviz.org/),plantuml 绘制状态图依赖 Graphviz，参见[文档](http://wiki.plantuml.net/site/faq-install)
-### 第四步 在plantuml.txt所在目录下执行命令：java -jar plantuml.jar -verbose plantuml.txt，就会生成对应状态图
+备注：
+1、[PlantUML](https://plantuml.com/zh/starting) 要绘制状态图, 需要安装 [Graphviz](https://www.graphviz.org/download/) ；
+2、InterlliJ IDEA 中有一款 PlantUML Integration 插件，可以配合 Graphviz 编辑生成 PlantUML 图。
+
 
