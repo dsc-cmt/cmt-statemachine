@@ -95,7 +95,7 @@ public class StateDiagramTest {
     }
 
     @Test
-    public void testGraphvizJava(){
+    public void testGenerateStateDiagram(){
         StateMachine stateMachine = buildStateMachine();
         stateMachine.generateStateDiagram();
 

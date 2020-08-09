@@ -82,9 +82,19 @@ public interface StateMachine<S, E> extends Visitable {
     void generatePlantUML();
 }
 ```
-可以参考 StateMachinePlantUMLTest 单测类。
+可以参考 StateDiagramTest.testPlantUML()。
 备注：
 1、[PlantUML](https://plantuml.com/zh/starting) 要绘制状态图, 需要安装 [Graphviz](https://www.graphviz.org/download/) ；
 2、InterlliJ IDEA 中有一款 PlantUML Integration 插件，可以配合 Graphviz 编辑生成 PlantUML 图。
 
-
+## 项目引入了 graphviz-java 支持生成状态图图片
+```java
+public interface StateMachine<S, E> extends Visitable {
+    ...
+    /**
+     * generate state diagram.
+     */
+    void generateStateDiagram();
+}
+```
+可以参考 StateDiagramTest.testGenerateStateDiagram()。
