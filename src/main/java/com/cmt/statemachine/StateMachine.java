@@ -54,7 +54,7 @@ public interface StateMachine<S, E> extends Visitable {
     void showStateMachine();
 
     /**
-     * generate plantUml state diagram.
+     * generate plantUml state diagram text file.
      */
     void generatePlantUML();
 
@@ -64,4 +64,9 @@ public interface StateMachine<S, E> extends Visitable {
      * @return initial state
      */
     S getInitialState();
+
+    /**
+     * generate GraphvizJava state diagram.
+     */
+    void generateStateDiagram();
 }

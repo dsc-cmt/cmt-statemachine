@@ -4,9 +4,21 @@ import com.cmt.statemachine.State;
 import com.cmt.statemachine.StateMachine;
 import com.cmt.statemachine.Transition;
 import com.cmt.statemachine.Visitor;
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.Style;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Node;
 
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+import static guru.nidi.graphviz.model.Factory.graph;
+import static guru.nidi.graphviz.model.Factory.node;
+import static guru.nidi.graphviz.model.Link.to;
 
 /**
  * For performance consideration,
@@ -131,6 +143,33 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
     @Override
     public S getInitialState() {
         return initialState;
+    }
+
+    @Override
+    public void generateStateDiagram() {
+        HashMap<String,Node> stateNodeMap = new HashMap<>(16);
+        stateMap.keySet().forEach(S->{
+            stateNodeMap.put(S.toString(), node(S.toString()));
+        });
+
+        List<Node> nodeList = new ArrayList<>();
+        stateMap.keySet().stream().forEach(S -> {
+            Node sNode = stateNodeMap.get(S.toString());
+            State<S,E> sStateImpl = stateMap.get(S);
+            Collection<Transition<S,E>> sTransitions = sStateImpl.getTransitions();
+            sTransitions.forEach(
+                    transition -> {
+                        nodeList.add(
+                                sNode.link(to(stateNodeMap.get(transition.getTarget().getId().toString())).with(Style.BOLD,Label.of(transition.getEvent().toString()), Color.RED)));
+                    }
+            );
+        });
+        Graph graph = graph("StateDiagram").directed().with(nodeList);
+        try {
+            Graphviz.fromGraph(graph).width(900).render(Format.PNG).toFile(new File("StateDiagram"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
