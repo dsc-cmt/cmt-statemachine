@@ -42,6 +42,8 @@ public class PlantUMLVisitor implements Visitor {
 
     @Override
     public void visitOnExit(StateMachine<?, ?> visitable) {
+        // 添加上PlantUML所需的开始状态描述语法：[*] --> initialState
+        plantUMLStatements.add("[*] --> " + visitable.getInitialState());
         System.out.println("@enduml");
         plantUMLStatements.add("@enduml");
         //生成 plantuml.txt 文件

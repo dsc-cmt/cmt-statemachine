@@ -48,9 +48,6 @@ public class StateImpl<S, E> implements State<S, E> {
      */
     private void verify(E event, Transition<S, E> newTransition) {
         List<Transition<S, E>> existingTransitions = transitions.get(event);
-        /*if (Co) {
-
-        }*/
         for (Transition transition : existingTransitions) {
             if (transition.equals(newTransition)) {
                 throw new StateMachineException(transition + " already Exist, you can not add another one");
