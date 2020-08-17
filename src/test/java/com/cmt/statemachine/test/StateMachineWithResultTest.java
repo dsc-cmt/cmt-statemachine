@@ -21,7 +21,8 @@ public class StateMachineWithResultTest {
     @Test
     public void testExternalNormal() {
         StateMachineBuilder<States, Operations> builder = StateMachineBuilderFactory.create();
-        builder.externalTransition()
+        builder.initialState(States.STATE1)
+                .externalTransition()
                 .from(States.STATE1)
                 .to(States.STATE2)
                 .on(Operations.OPER1)
@@ -54,7 +55,8 @@ public class StateMachineWithResultTest {
     @Test
     public void testConditionAndRequest() {
         StateMachineBuilder<States, Operations> builder = StateMachineBuilderFactory.create();
-        builder.externalTransition()
+        builder.initialState(States.STATE1)
+                .externalTransition()
                 .from(States.STATE1)
                 .to(States.STATE2)
                 .on(Operations.OPER1)
