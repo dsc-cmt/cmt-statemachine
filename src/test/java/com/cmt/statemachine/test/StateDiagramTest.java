@@ -11,16 +11,16 @@ import org.junit.Test;
 
 import java.util.stream.Stream;
 
-import static com.cmt.statemachine.test.StateMachinePlantUMLTest.PriceAdjustmentTaskEventEnum.*;
-import static com.cmt.statemachine.test.StateMachinePlantUMLTest.PriceAdjustmentTaskStatusEnum.*;
+import static com.cmt.statemachine.test.StateDiagramTest.PriceAdjustmentTaskEventEnum.*;
+import static com.cmt.statemachine.test.StateDiagramTest.PriceAdjustmentTaskStatusEnum.*;
 
 /**
- * StateMachinePlantUMLTest
+ * 生成状态图相关测试
  *
  * @author Frank Zhang
  * @date 2020-02-09 7:53 PM
  */
-public class StateMachinePlantUMLTest {
+public class StateDiagramTest {
 
     static enum PriceAdjustmentTaskStatusEnum {
         /**
@@ -90,9 +90,22 @@ public class StateMachinePlantUMLTest {
 
     @Test
     public void testPlantUML(){
+        StateMachine stateMachine = buildStateMachine();
+        stateMachine.generatePlantUML();
+    }
+
+    @Test
+    public void testGenerateStateDiagram(){
+        StateMachine stateMachine = buildStateMachine();
+        stateMachine.generateStateDiagram();
+
+    }
+
+    private StateMachine buildStateMachine(){
         StateMachineBuilder<PriceAdjustmentTaskStatusEnum, PriceAdjustmentTaskEventEnum> builder = StateMachineBuilderFactory.create();
 
-        builder.externalTransition()
+        builder.initialState(None)
+                .externalTransition()
                 .from(None)
                 .to(Supplier_Processing)
                 .on(Create)
@@ -168,9 +181,7 @@ public class StateMachinePlantUMLTest {
                         .when(checkCondition())
                         .perform(doAction()));
 
-        StateMachine stateMachine = builder.build("AdjustPriceTask");
-        stateMachine.generatePlantUML();
-
+        return builder.build("AdjustPriceTask");
     }
 
     private Condition<StateMachineTest.Context> checkCondition() {
