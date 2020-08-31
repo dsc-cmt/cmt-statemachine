@@ -1,8 +1,11 @@
+[![Build Status](https://travis-ci.com/dsc-cmt/cmt-statemachine.svg?branch=master)](https://travis-ci.com/github/dsc-cmt/cmt-statemachine)
+[![codecov](https://codecov.io/gh/dsc-cmt/cmt-statemachine/branch/master/graph/badge.svg)](https://codecov.io/gh/dsc-cmt/cmt-statemachine)
+
 **cmt-statemachine**【_草帽_】，是一个基于 [cola-statemachine](https://github.com/alibaba/COLA/tree/master/cola-statemachine) 的优化版状态机。
 
 **cmt-statemachine**新增特性：
 
-+ 1.支持定义多个不同的流转目标状态
++ 1.支持if/elseif多条件判断
 + 2.触发事件的接口支持返回业务对象
 + 3.触发事件的接口支持传递任意类型的入参
 + 4.触发事件的接口支持分别传入条件参数和执行参数
@@ -34,7 +37,8 @@ public class StateMachineFactory {
     @Bean
     public StateMachine stateMachine(){
         StateMachineBuilder<States, Events> builder = StateMachineBuilderFactory.create();
-                builder.externalTransition()
+                builder.initialState(States.STATE1)
+                        .externalTransition()
                         .from(States.STATE1)
                         .to(States.STATE2)
                         .on(Events.EVENT1)
@@ -73,3 +77,30 @@ class Req extends DefaultStateAwareImpl<States>{
   
 }
 ```
+## 如何根据配置的状态机生成 PlantUML 状态图
+### 执行 StateMachine 接口的 generatePlantUML 方法，得到 plantuml.txt 文件:
+```java
+public interface StateMachine<S, E> extends Visitable {
+    ...
+    /**
+     * generate plantuml.txt which is used to generate the state diagram.
+     */
+    void generatePlantUML();
+}
+```
+可以参考 StateDiagramTest.testPlantUML()。   
+备注：  
+1、[PlantUML](https://plantuml.com/zh/starting) 要绘制状态图, 需要安装 [Graphviz](https://www.graphviz.org/download/) ；   
+2、InterlliJ IDEA 中有一款 PlantUML Integration 插件，可以配合 Graphviz 编辑生成 PlantUML 图。
+
+## 项目引入了 graphviz-java 支持生成简易的状态图图片
+```java
+public interface StateMachine<S, E> extends Visitable {
+    ...
+    /**
+     * generate state diagram.
+     */
+    void generateStateDiagram();
+}
+```
+可以参考 StateDiagramTest.testGenerateStateDiagram()。
