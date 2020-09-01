@@ -4,6 +4,7 @@ import com.cmt.statemachine.State;
 import com.cmt.statemachine.StateMachine;
 import com.cmt.statemachine.Transition;
 import com.cmt.statemachine.Visitor;
+import com.cmt.statemachine.util.StateUtil;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Style;
@@ -148,19 +149,21 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
     @Override
     public void generateStateDiagram() {
         HashMap<String,Node> stateNodeMap = new HashMap<>(16);
-        stateMap.keySet().forEach(S->{
-            stateNodeMap.put(S.toString(), node(S.toString()));
+        //是否使用状态描述字段绘图
+        boolean enableDesc = StateUtil.getEnableDesc(initialState);
+        stateMap.keySet().forEach(s->{
+            stateNodeMap.put(getStateDesc(s, enableDesc), node(getStateDesc(s, enableDesc)).with(Color.BLUE));
         });
 
         List<Node> nodeList = new ArrayList<>();
-        stateMap.keySet().stream().forEach(S -> {
-            Node sNode = stateNodeMap.get(S.toString());
-            State<S,E> sStateImpl = stateMap.get(S);
+        stateMap.keySet().stream().forEach(s -> {
+            Node sNode = stateNodeMap.get(getStateDesc(s, enableDesc));
+            State<S,E> sStateImpl = stateMap.get(s);
             Collection<Transition<S,E>> sTransitions = sStateImpl.getTransitions();
             sTransitions.forEach(
                     transition -> {
                         nodeList.add(
-                                sNode.link(to(stateNodeMap.get(transition.getTarget().getId().toString())).with(Style.BOLD,Label.of(transition.getEvent().toString()), Color.RED)));
+                                sNode.link(to(stateNodeMap.get(getStateDesc(transition.getTarget().getId(), enableDesc))).with(Style.BOLD,Label.of(transition.getEvent().toString()), Color.GREEN)));
                     }
             );
         });
@@ -170,6 +173,23 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 状态描述字符串
+     * @param s 状态
+     * @param enableDesc 是否启用状态描述字段
+     * @return 如果 enableDesc 为 true，则返回状态描述字段值，见 @StateConfig;
+     *         如果 enableDesc 为 false，则返回 s.toString()
+     */
+    private String getStateDesc(S s, boolean enableDesc){
+        if (enableDesc) {
+            Object obj = StateUtil.getStateDesc(s);
+            if (obj instanceof String) {
+                return obj.toString();
+            }
+        }
+        return s.toString();
     }
 
     @Override
