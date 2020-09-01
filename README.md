@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.cmt</groupId>
             <artifactId>cmt-statemachine</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
 ```
 ### 第二步 定义自己的状态与事件
