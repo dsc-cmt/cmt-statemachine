@@ -4,6 +4,7 @@ import com.cmt.statemachine.State;
 import com.cmt.statemachine.StateMachine;
 import com.cmt.statemachine.Transition;
 import com.cmt.statemachine.Visitor;
+import com.cmt.statemachine.util.EventUtil;
 import com.cmt.statemachine.util.StateUtil;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
@@ -163,7 +164,7 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
             sTransitions.forEach(
                     transition -> {
                         nodeList.add(
-                                sNode.link(to(stateNodeMap.get(getStateDesc(transition.getTarget().getId(), enableDesc))).with(Style.BOLD,Label.of(transition.getEvent().toString()), Color.GREEN)));
+                                sNode.link(to(stateNodeMap.get(getStateDesc(transition.getTarget().getId(), enableDesc))).with(Style.BOLD,Label.of(EventUtil.getEventDesc(transition.getEvent())), Color.GREEN)));
                     }
             );
         });

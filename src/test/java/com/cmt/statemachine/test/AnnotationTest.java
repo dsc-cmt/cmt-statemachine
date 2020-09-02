@@ -4,17 +4,18 @@ import com.cmt.statemachine.Action;
 import com.cmt.statemachine.Condition;
 import com.cmt.statemachine.StateMachine;
 import com.cmt.statemachine.StateMachineFactory;
+import com.cmt.statemachine.annotation.EventConfig;
 import com.cmt.statemachine.annotation.StateConfig;
 import com.cmt.statemachine.builder.StateMachineBuilder;
 import com.cmt.statemachine.builder.StateMachineBuilderFactory;
-import com.cmt.statemachine.util.StateUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author dingchenchen
  * @since 2020/8/31
  */
-public class StateConfigAnnotationTest {
+public class AnnotationTest {
 
     @StateConfig(descField = "desc", enableDesc = true)
     static enum States {
@@ -41,16 +42,21 @@ public class StateConfigAnnotationTest {
     }
 
     static enum Events {
-        EVENT1, EVENT2, EVENT3, EVENT4, INTERNAL_EVENT
+        @EventConfig(desc = "事件1")
+        EVENT1,
+        @EventConfig(desc = "事件2")
+        EVENT2,
+        @EventConfig(desc = "事件3")
+        EVENT3,
+        @EventConfig(desc = "事件4")
+        EVENT4,
+        @EventConfig(desc = "状态自流转事件")
+        INTERNAL_EVENT
     }
 
     @Test
-    public void testStateConfigAnnotation() {
-        System.out.println(StateUtil.getEnableDesc(States.STATE2));
-    }
-
-    @Test
-    public void testExternalInternalNormal(){
+    @Ignore
+    public void testPlantUML(){
         StateMachine<StateMachineTest.States, StateMachineTest.Events> stateMachine = buildStateMachine("testExternalInternalNormal").get("testExternalInternalNormal");
         stateMachine.generatePlantUML();
     }

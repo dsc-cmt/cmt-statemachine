@@ -4,6 +4,7 @@ import com.cmt.statemachine.State;
 import com.cmt.statemachine.StateMachine;
 import com.cmt.statemachine.Transition;
 import com.cmt.statemachine.Visitor;
+import com.cmt.statemachine.util.EventUtil;
 import com.cmt.statemachine.util.StateUtil;
 
 import java.io.File;
@@ -93,7 +94,7 @@ public class PlantUMLVisitor implements Visitor {
                     targetState = obj.toString();
                 }
             }
-            plantUMLStatements.add(sourceState + " --> " + targetState + " : " + transition.getEvent());
+            plantUMLStatements.add(sourceState + " --> " + targetState + " : " + EventUtil.getEventDesc(transition.getEvent()));
         }
     }
 
