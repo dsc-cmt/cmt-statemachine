@@ -13,11 +13,12 @@
 ## 如何使用cmt-statemachine
 ### 第一步 引入依赖
 ```xml
-        <dependency>
-            <groupId>com.cmt</groupId>
-            <artifactId>cmt-statemachine</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
+<dependency>
+    <groupId>com.github.dsc-cmt</groupId>
+    <artifactId>cmt-statemachine</artifactId>
+    <version>1.2</version>
+</dependency>
+
 ```
 ### 第二步 定义自己的状态与事件
 ```java
