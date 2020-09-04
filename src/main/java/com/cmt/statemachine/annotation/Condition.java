@@ -1,21 +1,23 @@
 package com.cmt.statemachine.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 状态配置注解
+ * Condition 注解
+ *
  * @author dingchenchen
- * @since 2020/8/31
+ * @since 2020/9/4
  */
-@Target(ElementType.TYPE)
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface StateConfig {
-
+@Target(ElementType.METHOD)
+public @interface Condition {
     /**
-     * 指定状态类 S 中的描述字段
+     * 条件描述
      */
-    String descField() default "";
+    String desc() default "";
 }

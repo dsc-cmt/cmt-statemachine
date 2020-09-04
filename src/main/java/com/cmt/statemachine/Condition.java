@@ -6,6 +6,7 @@ package com.cmt.statemachine;
  * @author Frank Zhang
  * @date 2020-02-07 2:50 PM
  */
+@FunctionalInterface
 public interface Condition<R> {
 
     /**

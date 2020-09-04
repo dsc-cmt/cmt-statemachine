@@ -16,7 +16,7 @@ public class StateUtil {
      * @param s 状态类
      * @return 状态类的描述字段
      */
-    public static <S> Object getStateDesc(S s) {
+    public static <S> Object getStateDescField(S s) {
         Class clazz = s.getClass();
         if (!clazz.isAnnotationPresent(StateConfig.class)) {
             return null;
@@ -29,22 +29,7 @@ public class StateUtil {
             return field.get(s);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
-    }
-
-    /**
-     * 是否使用状态类状态描述字段绘图
-     *
-     * @param s 状态类
-     * @return
-     */
-    public static <S> boolean getEnableDesc(S s) {
-        Class clazz = s.getClass();
-        if (!clazz.isAnnotationPresent(StateConfig.class)) {
-            return false;
-        }
-        StateConfig stateConfig = (StateConfig) clazz.getAnnotation(StateConfig.class);
-        return stateConfig.enableDesc();
     }
 }

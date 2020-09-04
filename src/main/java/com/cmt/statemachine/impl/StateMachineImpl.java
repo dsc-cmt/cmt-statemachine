@@ -150,21 +150,19 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
     @Override
     public void generateStateDiagram() {
         HashMap<String,Node> stateNodeMap = new HashMap<>(16);
-        //是否使用状态描述字段绘图
-        boolean enableDesc = StateUtil.getEnableDesc(initialState);
         stateMap.keySet().forEach(s->{
-            stateNodeMap.put(getStateDesc(s, enableDesc), node(getStateDesc(s, enableDesc)).with(Color.BLUE));
+            stateNodeMap.put(getStateDesc(s), node(getStateDesc(s)).with(Color.BLUE));
         });
 
         List<Node> nodeList = new ArrayList<>();
         stateMap.keySet().stream().forEach(s -> {
-            Node sNode = stateNodeMap.get(getStateDesc(s, enableDesc));
+            Node sNode = stateNodeMap.get(getStateDesc(s));
             State<S,E> sStateImpl = stateMap.get(s);
             Collection<Transition<S,E>> sTransitions = sStateImpl.getTransitions();
             sTransitions.forEach(
                     transition -> {
                         nodeList.add(
-                                sNode.link(to(stateNodeMap.get(getStateDesc(transition.getTarget().getId(), enableDesc))).with(Style.BOLD,Label.of(EventUtil.getEventDesc(transition.getEvent())), Color.GREEN)));
+                                sNode.link(to(stateNodeMap.get(getStateDesc(transition.getTarget().getId()))).with(Style.BOLD,Label.of(EventUtil.getEventDesc(transition.getEvent())), Color.GREEN)));
                     }
             );
         });
@@ -179,16 +177,13 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
     /**
      * 状态描述字符串
      * @param s 状态
-     * @param enableDesc 是否启用状态描述字段
-     * @return 如果 enableDesc 为 true，则返回状态描述字段值，见 @StateConfig;
-     *         如果 enableDesc 为 false，则返回 s.toString()
+     * @return 如果状态指定了描述字段，则返回状态描述字段值，见 @StateConfig;
+     *         反之，则返回 s.toString()
      */
-    private String getStateDesc(S s, boolean enableDesc){
-        if (enableDesc) {
-            Object obj = StateUtil.getStateDesc(s);
-            if (obj instanceof String) {
-                return obj.toString();
-            }
+    private String getStateDesc(S s){
+        Object obj = StateUtil.getStateDescField(s);
+        if (Objects.nonNull(obj) && obj instanceof String) {
+            return obj.toString();
         }
         return s.toString();
     }

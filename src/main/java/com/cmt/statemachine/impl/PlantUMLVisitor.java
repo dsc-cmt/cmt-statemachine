@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * PlantUMLVisitor
@@ -27,23 +28,22 @@ public class PlantUMLVisitor implements Visitor {
      */
     private List<String> plantUMLStatements;
 
-    /**
-     * Since the state machine is stateless, there is no initial state.
-     * <p>
-     * You have to add "[*] -> initialState" to mark it as a state machine diagram.
-     * otherwise it will be recognized as a sequence diagram.
-     *
-     * @param visitable the element to be visited.
-     */
     @Override
     public void visitOnEntry(StateMachine<?, ?> visitable) {
         plantUMLStatements = new ArrayList<>();
         plantUMLStatements.add("@startuml");
     }
 
+    /**
+     * You have to add "[*] -> initialState" to mark it as a state machine diagram.
+     * otherwise it will be recognized as a sequence diagram.
+     *
+     * @param visitable the element to be visited.
+     */
     @Override
     public void visitOnExit(StateMachine<?, ?> visitable) {
-        plantUMLStatements.add(getInitStatement(visitable));
+        // add "[*] -> initialState"
+        addInitStatement(visitable);
         plantUMLStatements.add("@enduml");
         //生成 plantuml.txt 文件
         plantUMLStatements.forEach(statement -> {
@@ -67,34 +67,23 @@ public class PlantUMLVisitor implements Visitor {
      * @param visitable
      * @return
      */
-    private String getInitStatement(StateMachine<?, ?> visitable) {
+    private void addInitStatement(StateMachine<?, ?> visitable) {
         // 添加上PlantUML所需的开始状态描述语法：[*] --> initialState
-        boolean enableDesc = StateUtil.getEnableDesc(visitable.getInitialState());
         String initStatement = "[*] --> " + visitable.getInitialState();
-        if (enableDesc) {
-            Object obj = StateUtil.getStateDesc(visitable.getInitialState());
-            if (obj instanceof String) {
-                initStatement = "[*] --> " + obj.toString();
-            }
-        }
-        return initStatement;
+        plantUMLStatements.add(initStatement);
     }
 
     @Override
     public void visitOnEntry(State<?, ?> state) {
-        boolean enableDesc = StateUtil.getEnableDesc(state.getId());
         for (Transition transition : state.getTransitions()) {
             String sourceState = transition.getSource().getId().toString();
             String targetState = transition.getTarget().getId().toString();
-            if (enableDesc) {
-                Object obj = StateUtil.getStateDesc(transition.getSource().getId());
-                if (obj instanceof String) {
-                    sourceState = obj.toString();
-                    obj = StateUtil.getStateDesc(transition.getTarget().getId());
-                    targetState = obj.toString();
-                }
-            }
             plantUMLStatements.add(sourceState + " --> " + targetState + " : " + EventUtil.getEventDesc(transition.getEvent()));
+        }
+        Object obj = StateUtil.getStateDescField(state.getId());
+        if (Objects.nonNull(obj) && obj instanceof String) {
+            String stateDesc = obj.toString();
+            plantUMLStatements.add(state.getId().toString() + " : " + stateDesc);
         }
     }
 
