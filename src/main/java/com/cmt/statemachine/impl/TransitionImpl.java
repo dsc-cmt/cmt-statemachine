@@ -20,6 +20,8 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
 
     private Condition<?> condition;
 
+    private String conditionDesc;
+
     private Action<?,?> action;
 
     private TransitionType type = TransitionType.EXTERNAL;
@@ -67,6 +69,12 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
     @Override
     public <C> void setCondition(Condition<C> condition) {
         this.condition = condition;
+    }
+
+    @Override
+    public <C> void setCondition(Condition<C> condition, String conditionDesc) {
+        this.condition = condition;
+        this.conditionDesc = conditionDesc;
     }
 
     @Override
@@ -143,9 +151,14 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
         return nullIfNotSatisfied(func,cond,ac,request);
     }
 
+    @Override
+    public String getConditionDesc() {
+        return conditionDesc;
+    }
+
     private <T, C, R> T nullIfNotSatisfied(Condition<C> func, C cond, Action<R,T> ac, R request) {
         if(func == null || func.isSatisfied(cond)){
-            T t=null;
+            T t = null;
             setNextState(target,request);
             if(ac != null){
                 t = ac.execute(request);

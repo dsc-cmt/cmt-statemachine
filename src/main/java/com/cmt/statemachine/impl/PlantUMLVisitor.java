@@ -78,7 +78,13 @@ public class PlantUMLVisitor implements Visitor {
         for (Transition transition : state.getTransitions()) {
             String sourceState = transition.getSource().getId().toString();
             String targetState = transition.getTarget().getId().toString();
-            plantUMLStatements.add(sourceState + " --> " + targetState + " : " + EventUtil.getEventDesc(transition.getEvent()));
+            StringBuilder sb = new StringBuilder();
+            sb.append(sourceState).append(" --> ").append(targetState).append(" : ").append(EventUtil.getEventDesc(transition.getEvent()));
+            String conditionDesc = transition.getConditionDesc();
+            if (conditionDesc != null) {
+                 sb.append(" && ").append(conditionDesc);
+            }
+            plantUMLStatements.add(sb.toString());
         }
         Object obj = StateUtil.getStateDescField(state.getId());
         if (Objects.nonNull(obj) && obj instanceof String) {

@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class AnnotationTest {
 
-    @StateConfig(descField = "desc", enableDesc = true)
+    @StateConfig(descField = "desc")
     static enum States {
         STATE1(1, "状态1"),
         STATE2(2, "状态2"),
@@ -88,14 +88,14 @@ public class AnnotationTest {
                 .from(States.STATE1)
                 .to(States.STATE3)
                 .on(Events.EVENT3)
-                .when(checkCondition())
+                .when(Optype::isLoanFirst)
                 .perform(doAction());
 
         builder.externalTransitions()
                 .fromAmong(States.STATE1, States.STATE2, States.STATE3)
                 .to(States.STATE4)
                 .on(Events.EVENT4)
-                .when(checkCondition())
+                .when(checkCondition(),"条件为true")
                 .perform(doAction());
 
 
@@ -119,5 +119,11 @@ public class AnnotationTest {
             }
         };
 
+    }
+
+    public static class Optype{
+        public static boolean isLoanFirst(Integer code){
+            return code == 1;
+        }
     }
 }

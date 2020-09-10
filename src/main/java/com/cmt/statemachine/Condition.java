@@ -10,12 +10,9 @@ package com.cmt.statemachine;
 public interface Condition<R> {
 
     /**
+     * Conditions for transition
      * @param context context object
      * @return whether the context satisfied current condition
      */
     boolean isSatisfied(R context);
-
-    default String name(){
-        return this.getClass().getSimpleName();
-    }
 }
