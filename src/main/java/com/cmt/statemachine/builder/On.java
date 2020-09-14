@@ -15,4 +15,12 @@ public interface On<S, E> extends When<S, E>{
      * @return When clause builder
      */
     <R> When<S, E> when(Condition<R> condition);
+
+    /**
+     * Add condition for the transition
+     * @param condition transition condition
+     * @param desc Description of transition condition
+     * @return When clause builder
+     */
+    <R> When<S, E> when(Condition<R> condition, String desc);
 }

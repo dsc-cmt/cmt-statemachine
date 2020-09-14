@@ -4,6 +4,8 @@ import com.cmt.statemachine.State;
 import com.cmt.statemachine.StateMachine;
 import com.cmt.statemachine.Transition;
 import com.cmt.statemachine.Visitor;
+import com.cmt.statemachine.util.EventUtil;
+import com.cmt.statemachine.util.StateUtil;
 import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
 import guru.nidi.graphviz.attribute.Style;
@@ -148,19 +150,19 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
     @Override
     public void generateStateDiagram() {
         HashMap<String,Node> stateNodeMap = new HashMap<>(16);
-        stateMap.keySet().forEach(S->{
-            stateNodeMap.put(S.toString(), node(S.toString()));
+        stateMap.keySet().forEach(s->{
+            stateNodeMap.put(getStateDesc(s), node(getStateDesc(s)).with(Color.BLUE));
         });
 
         List<Node> nodeList = new ArrayList<>();
-        stateMap.keySet().stream().forEach(S -> {
-            Node sNode = stateNodeMap.get(S.toString());
-            State<S,E> sStateImpl = stateMap.get(S);
+        stateMap.keySet().stream().forEach(s -> {
+            Node sNode = stateNodeMap.get(getStateDesc(s));
+            State<S,E> sStateImpl = stateMap.get(s);
             Collection<Transition<S,E>> sTransitions = sStateImpl.getTransitions();
             sTransitions.forEach(
                     transition -> {
                         nodeList.add(
-                                sNode.link(to(stateNodeMap.get(transition.getTarget().getId().toString())).with(Style.BOLD,Label.of(transition.getEvent().toString()), Color.RED)));
+                                sNode.link(to(stateNodeMap.get(getStateDesc(transition.getTarget().getId()))).with(Style.BOLD,Label.of(EventUtil.getEventDesc(transition.getEvent())), Color.GREEN)));
                     }
             );
         });
@@ -170,6 +172,20 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 状态描述字符串
+     * @param s 状态
+     * @return 如果状态指定了描述字段，则返回状态描述字段值，见 @StateConfig;
+     *         反之，则返回 s.toString()
+     */
+    private String getStateDesc(S s){
+        Object obj = StateUtil.getStateDescField(s);
+        if (Objects.nonNull(obj) && obj instanceof String) {
+            return obj.toString();
+        }
+        return s.toString();
     }
 
     @Override

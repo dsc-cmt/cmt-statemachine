@@ -46,6 +46,8 @@ public interface Transition<S, E>{
 
     <C> void setCondition(Condition<C> condition);
 
+    <C> void setCondition(Condition<C> condition, String conditionDesc);
+
     <C,T> Action<C,T> getAction();
 
     <C,T> void setAction(Action<C,T> action);
@@ -66,4 +68,6 @@ public interface Transition<S, E>{
     void verify();
 
     <T,C,R> T transitWithResult(C cond, R request);
+
+    String getConditionDesc();
 }

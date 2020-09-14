@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Frank Zhang
  * @date 2020-02-07 10:20 PM
  */
-class TransitionBuilderImpl<S,E> implements ExternalTransitionBuilder<S,E>, InternalTransitionBuilder<S,E>, From<S,E>, On<S,E>, To<S,E> {
+class TransitionBuilderImpl<S, E> implements ExternalTransitionBuilder<S, E>, InternalTransitionBuilder<S, E>, From<S, E>, On<S, E>, To<S, E> {
 
     final Map<S, State<S, E>> stateMap;
 
@@ -57,13 +57,19 @@ class TransitionBuilderImpl<S,E> implements ExternalTransitionBuilder<S,E>, Inte
     }
 
     @Override
+    public <R> When<S, E> when(Condition<R> condition, String desc) {
+        transition.setCondition(condition, desc);
+        return this;
+    }
+
+    @Override
     public On<S, E> on(E event) {
         transition = source.addTransition(event, target, transitionType);
         return this;
     }
 
     @Override
-    public <C,T> void perform(Action<C,T> action) {
+    public <C, T> void perform(Action<C, T> action) {
         transition.setAction(action);
     }
 

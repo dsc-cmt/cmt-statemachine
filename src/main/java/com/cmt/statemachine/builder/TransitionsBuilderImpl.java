@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Frank Zhang
  * @date 2020-02-08 7:43 PM
  */
-public class TransitionsBuilderImpl<S,E,C> extends TransitionBuilderImpl<S,E> implements ExternalTransitionsBuilder<S,E> {
+public class TransitionsBuilderImpl<S, E, C> extends TransitionBuilderImpl<S, E> implements ExternalTransitionsBuilder<S, E> {
     /**
      * This is for fromAmong where multiple sources can be configured to point to one target
      */
@@ -31,7 +31,7 @@ public class TransitionsBuilderImpl<S,E,C> extends TransitionBuilderImpl<S,E> im
 
     @Override
     public From<S, E> fromAmong(S... stateIds) {
-        for(S stateId : stateIds) {
+        for (S stateId : stateIds) {
             sources.add(StateHelper.getState(super.stateMap, stateId));
         }
         return this;
@@ -39,7 +39,7 @@ public class TransitionsBuilderImpl<S,E,C> extends TransitionBuilderImpl<S,E> im
 
     @Override
     public On<S, E> on(E event) {
-        for(State source : sources) {
+        for (State source : sources) {
             Transition transition = source.addTransition(event, super.target, super.transitionType);
             transitions.add(transition);
         }
@@ -48,15 +48,23 @@ public class TransitionsBuilderImpl<S,E,C> extends TransitionBuilderImpl<S,E> im
 
     @Override
     public <C> When<S, E> when(Condition<C> condition) {
-        for(Transition transition : transitions){
+        for (Transition transition : transitions) {
             transition.setCondition(condition);
         }
         return this;
     }
 
     @Override
-    public <C,T> void perform(Action<C,T> action) {
-        for(Transition transition : transitions){
+    public <C> When<S, E> when(Condition<C> condition, String desc) {
+        for (Transition transition : transitions) {
+            transition.setCondition(condition, desc);
+        }
+        return this;
+    }
+
+    @Override
+    public <C, T> void perform(Action<C, T> action) {
+        for (Transition transition : transitions) {
             transition.setAction(action);
         }
     }
