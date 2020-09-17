@@ -42,15 +42,15 @@ public class AnnotationTest {
     }
 
     static enum Events {
-        @EventConfig(desc = "事件1")
+        @EventConfig("事件1")
         EVENT1,
-        @EventConfig(desc = "事件2")
+        @EventConfig("事件2")
         EVENT2,
-        @EventConfig(desc = "事件3")
+        @EventConfig("事件3")
         EVENT3,
-        @EventConfig(desc = "事件4")
+        @EventConfig("事件4")
         EVENT4,
-        @EventConfig(desc = "状态自流转事件")
+        @EventConfig("状态自流转事件")
         INTERNAL_EVENT
     }
 
