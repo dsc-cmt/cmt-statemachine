@@ -16,7 +16,7 @@
 <dependency>
     <groupId>com.github.dsc-cmt</groupId>
     <artifactId>cmt-statemachine</artifactId>
-    <version>1.2</version>
+    <version>1.3.1</version>
 </dependency>
 
 ```
