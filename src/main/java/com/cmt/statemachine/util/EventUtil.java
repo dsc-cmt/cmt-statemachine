@@ -23,7 +23,7 @@ public class EventUtil {
             Field field = clazz.getDeclaredField(fieldName);
             if (field.isAnnotationPresent(EventConfig.class)) {
                 EventConfig eventConfig = field.getAnnotation(EventConfig.class);
-                return eventConfig.desc();
+                return eventConfig.value();
             }
         } catch (NoSuchFieldException noSuchFieldException) {
             noSuchFieldException.printStackTrace();

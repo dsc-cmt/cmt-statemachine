@@ -17,7 +17,12 @@ public class StateUtil {
      * @return 状态类的描述字段
      */
     public static <S> Object getStateDescField(S s) {
-        Class clazz = s.getClass();
+        Class clazz = null;
+        if (s instanceof Enum) {
+            clazz = ((Enum) s).getDeclaringClass();
+        } else {
+            clazz = s.getClass();
+        }
         if (!clazz.isAnnotationPresent(StateConfig.class)) {
             return null;
         }

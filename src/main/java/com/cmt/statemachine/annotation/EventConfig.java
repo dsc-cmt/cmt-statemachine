@@ -21,5 +21,5 @@ public @interface EventConfig {
      * 事件描述
      * 注：生成 plant uml 语法文件和绘图会使用描述字符串
      */
-    String desc() default "";
+    String value() default "";
 }
