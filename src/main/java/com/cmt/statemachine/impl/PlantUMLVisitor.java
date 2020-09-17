@@ -32,6 +32,8 @@ public class PlantUMLVisitor implements Visitor {
     public void visitOnEntry(StateMachine<?, ?> visitable) {
         plantUMLStatements = new ArrayList<>();
         plantUMLStatements.add("@startuml");
+        // add "[*] -> initialState"
+        addInitStatement(visitable);
     }
 
     /**
@@ -42,8 +44,6 @@ public class PlantUMLVisitor implements Visitor {
      */
     @Override
     public void visitOnExit(StateMachine<?, ?> visitable) {
-        // add "[*] -> initialState"
-        addInitStatement(visitable);
         plantUMLStatements.add("@enduml");
         //生成 plantuml.txt 文件
         plantUMLStatements.forEach(statement -> {
