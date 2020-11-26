@@ -1,9 +1,6 @@
 package com.cmt.statemachine.impl;
 
-import com.cmt.statemachine.State;
-import com.cmt.statemachine.StateMachine;
-import com.cmt.statemachine.Transition;
-import com.cmt.statemachine.Visitor;
+import com.cmt.statemachine.*;
 import com.cmt.statemachine.util.EventUtil;
 import com.cmt.statemachine.util.StateUtil;
 import guru.nidi.graphviz.attribute.Color;
@@ -42,6 +39,8 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
 
     private S initialState;
 
+    private NoMatchStrategy<S, E> noMatchStrategy;
+
     public StateMachineImpl(Map<S, State< S, E>> stateMap){
         this.stateMap = stateMap;
     }
@@ -52,7 +51,7 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
         Transition<S,E> transition = routeTransition(sourceStateId, event, request);
 
         if (transition == null) {
-            Debugger.debug("There is no appropriate Transition for " + event);
+            noMatchStrategy.process(sourceStateId, event);
             return sourceStateId;
         }
 
@@ -65,7 +64,7 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
         Transition<S,E> transition = routeTransition(sourceStateId, event, request);
 
         if (transition == null) {
-            Debugger.debug("There is no appropriate Transition for " + event);
+            noMatchStrategy.process(sourceStateId, event);
             return null;
         }
 
@@ -77,7 +76,7 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
         this.isReady();
         Transition<S, E> transition = this.routeTransition(sourceStateId, event, cond);
         if (transition == null) {
-            Debugger.debug("There is no appropriate Transition for " + event);
+            noMatchStrategy.process(sourceStateId, event);
             return null;
         } else {
             return transition.transitWithResult(cond,request);
@@ -212,5 +211,9 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
 
     public void setInitialState(S initialState) {
         this.initialState = initialState;
+    }
+
+    public void setNoMatchStrategy(NoMatchStrategy<S, E> noMatchStrategy) {
+        this.noMatchStrategy = noMatchStrategy;
     }
 }
