@@ -1,9 +1,6 @@
 package com.cmt.statemachine.test;
 
-import com.cmt.statemachine.Action;
-import com.cmt.statemachine.Condition;
-import com.cmt.statemachine.StateMachine;
-import com.cmt.statemachine.StateMachineFactory;
+import com.cmt.statemachine.*;
 import com.cmt.statemachine.builder.StateMachineBuilder;
 import com.cmt.statemachine.builder.StateMachineBuilderFactory;
 import org.junit.Assert;
@@ -158,6 +155,28 @@ public class StateMachineTest {
         Assert.assertEquals(States.STATE1, stateMachine.getInitialState());
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testNoMatchTransition(){
+        StateMachineBuilder<States, Events> builder = StateMachineBuilderFactory.create();
+        builder.initialState(States.STATE1)
+                .externalTransitions()
+                .fromAmong(States.STATE1, States.STATE2, States.STATE3)
+                .to(States.STATE4)
+                .on(Events.EVENT1)
+                .when(checkCondition())
+                .perform(doAction());
+
+        builder.noMatchStrategy(new NoMatchStrategy<States, Events>() {
+            @Override
+            public void process(States state, Events event) {
+                throw new RuntimeException(state + " " + event);
+            }
+        });
+
+        StateMachine<States, Events> stateMachine = builder.build(MACHINE_ID+"3");
+        stateMachine.fireEvent(States.STATE1, Events.EVENT2, null);
+    }
+
     @Test
     public void testMultiThread(){
         StateMachineFactory factory = buildStateMachine("testMultiThread");
@@ -192,7 +211,6 @@ public class StateMachineTest {
 
     }
 
-
     private Condition<Context> checkCondition() {
         return (ctx) -> {return true;};
     }
@@ -206,15 +224,9 @@ public class StateMachineTest {
         return new Action<Context,String>() {
             @Override
             public String execute(StateMachineTest.Context ctx) {
-//                System.out.println(ctx.operator+" is operating "+ctx.entityId+"from:"+from+" to:"+to+" on:"+event);
                 return null;
             }
         };
-
-//        return (from, to, event, ctx)->{
-//            System.out.println(ctx.operator+" is operating "+ctx.entityId+" from:"+from+" to:"+to+" on:"+event);
-//        };
-
     }
 
 }

@@ -1,5 +1,6 @@
 package com.cmt.statemachine.builder;
 
+import com.cmt.statemachine.NoMatchStrategy;
 import com.cmt.statemachine.StateMachine;
 
 /**
@@ -36,4 +37,12 @@ public interface StateMachineBuilder<S, E> {
      * @return StateMachineBuilder
      */
     StateMachineBuilder<S, E> initialState(S initial);
+
+    /**
+     * Set the process strategy when there is no match transition
+     *
+     * @param noMatchStrategy
+     * @return
+     */
+    StateMachineBuilder<S, E> noMatchStrategy(NoMatchStrategy<S, E> noMatchStrategy);
 }

@@ -1,8 +1,12 @@
 package com.cmt.statemachine.builder;
 
+import com.cmt.statemachine.NoMatchStrategy;
 import com.cmt.statemachine.State;
 import com.cmt.statemachine.StateMachine;
-import com.cmt.statemachine.impl.*;
+import com.cmt.statemachine.impl.DefaultNoMatchStrategy;
+import com.cmt.statemachine.impl.StateHelper;
+import com.cmt.statemachine.impl.StateMachineImpl;
+import com.cmt.statemachine.impl.TransitionType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +25,7 @@ public class StateMachineBuilderImpl<S, E> implements StateMachineBuilder<S, E> 
     private final Map<S, State< S, E>> stateMap = new ConcurrentHashMap<>();
     private final StateMachineImpl<S, E> stateMachine = new StateMachineImpl<>(stateMap);
     private S initialState;
+    private NoMatchStrategy<S, E> noMatchStrategy;
 
     @Override
     public ExternalTransitionBuilder<S, E> externalTransition() {
@@ -43,12 +48,24 @@ public class StateMachineBuilderImpl<S, E> implements StateMachineBuilder<S, E> 
         stateMachine.setInitialState(initialState);
         stateMachine.verify();
         stateMachine.setReady(true);
+
+        if (this.noMatchStrategy == null) {
+            this.noMatchStrategy = new DefaultNoMatchStrategy<>();
+        }
+        stateMachine.setNoMatchStrategy(this.noMatchStrategy);
+
         return stateMachine;
     }
 
     @Override
     public StateMachineBuilder<S, E> initialState(S initial) {
         initialState = StateHelper.getState(stateMap, initial).getId();
+        return this;
+    }
+
+    @Override
+    public StateMachineBuilder<S, E> noMatchStrategy(NoMatchStrategy<S, E> noMatchStrategy) {
+        this.noMatchStrategy = noMatchStrategy;
         return this;
     }
 

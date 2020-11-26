@@ -9,6 +9,7 @@
 + 2.触发事件的接口支持返回业务对象
 + 3.触发事件的接口支持传递任意类型的入参
 + 4.触发事件的接口支持分别传入条件参数和执行参数
++ 5.支持配置没有匹配到状态流传路径时的处理策略
 
 ## 如何使用cmt-statemachine
 ### 第一步 引入依赖
@@ -45,6 +46,14 @@ public class StateMachineFactory {
                         .on(Events.EVENT1)
                         .when(checkCondition())
                         .perform(doAction());
+                
+                // 配置没有匹配到状态流传路径时的处理策略
+                builder.noMatchStrategy(new NoMatchStrategy<States, Events>() {
+                    @Override
+                    public void process(States state, Events event) {
+                        throw new RuntimeException(state + " " + event);
+                    }
+                });
         
          return stateMachine = builder.build(MACHINE_ID);
     }
