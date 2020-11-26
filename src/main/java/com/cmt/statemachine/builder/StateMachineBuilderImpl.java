@@ -51,9 +51,8 @@ public class StateMachineBuilderImpl<S, E> implements StateMachineBuilder<S, E> 
 
         if (this.noMatchStrategy == null) {
             this.noMatchStrategy = new DefaultNoMatchStrategy<>();
-        } else {
-            stateMachine.setNoMatchStrategy(this.noMatchStrategy);
         }
+        stateMachine.setNoMatchStrategy(this.noMatchStrategy);
 
         return stateMachine;
     }
