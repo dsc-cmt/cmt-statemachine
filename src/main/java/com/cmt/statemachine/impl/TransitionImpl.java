@@ -88,13 +88,13 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
     }
 
     @Override
-    public <C,T> State<S, E> transit(C request) {
+    public <C,T> State<S, E> transit(C request, boolean checkCondition) {
         Debugger.debug("Do transition: "+this);
         this.verify();
 
         Condition<C> cond = (Condition<C>) condition;
         Action<C,T> ac = (Action<C,T>) action;
-        if(cond == null || cond.isSatisfied(request)){
+        if(!checkCondition || cond == null || cond.isSatisfied(request)){
             setNextState(target,request);
             if(ac != null){
                 ac.execute(request);
@@ -108,11 +108,19 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
     }
 
     @Override
-    public <T, C> T transitWithResult(C request) {
+    public <T, C> T transitWithResult(C request, boolean checkCondition) {
         Debugger.debug("Do transition: "+this);
         this.verify();
         Condition<C> cond = (Condition<C>) condition;
         Action<C,T> ac = (Action<C,T>) action;
+        if (!checkCondition) {
+            T t = null;
+            setNextState(target,request);
+            if(ac != null){
+                t = ac.execute(request);
+            }
+            return t;
+        }
         return nullIfNotSatisfied(cond,request,ac,request);
     }
 

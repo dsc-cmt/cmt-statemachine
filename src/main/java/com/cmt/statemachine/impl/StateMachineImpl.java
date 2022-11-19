@@ -55,7 +55,7 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
             return sourceStateId;
         }
 
-        return transition.transit(request).getId();
+        return transition.transit(request, false).getId();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class StateMachineImpl<S,E> implements StateMachine<S, E> {
             return null;
         }
 
-       return transition.transitWithResult(request);
+       return transition.transitWithResult(request, false);
     }
 
     @Override
