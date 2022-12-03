@@ -93,7 +93,7 @@ public class TransitionImpl<S, E> implements Transition<S, E> {
         this.verify();
 
         Condition<C> cond = (Condition<C>) condition;
-        Action<C, T> ac = (Action<C, T>) action;
+        Action<C, T> ac = getAction();
         if (!checkCondition || cond == null || cond.isSatisfied(request)) {
             setNextState(target, request);
             if (ac != null) {
