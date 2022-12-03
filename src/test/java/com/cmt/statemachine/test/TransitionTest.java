@@ -3,6 +3,7 @@ package com.cmt.statemachine.test;
 import com.cmt.statemachine.State;
 import com.cmt.statemachine.Transition;
 import com.cmt.statemachine.impl.StateHelper;
+import com.cmt.statemachine.impl.StateMachineException;
 import com.cmt.statemachine.impl.TransitionImpl;
 import com.cmt.statemachine.impl.TransitionType;
 import org.junit.Assert;
@@ -49,5 +50,33 @@ public class TransitionTest {
         newTransition.setCondition(context -> false);
         Object result = newTransition.transitWithResult(new Object(), true);
         Assert.assertNull(result);
+    }
+
+    @Test
+    public void testMatchTransitWithResult() {
+        Map<States, State<States, Events>> stateMap = new HashMap<>();
+        Transition<States, Events> newTransition = new TransitionImpl<>();
+        newTransition.setSource(StateHelper.getState(stateMap,States.STATE1));
+        newTransition.setTarget(StateHelper.getState(stateMap,States.STATE2));
+        newTransition.setEvent(Events.EVENT1);
+        newTransition.setType(TransitionType.EXTERNAL);
+        newTransition.setCondition(context -> true, "true");
+        newTransition.setAction(action -> new Object());
+        Object result = newTransition.transitWithResult(new Object(), true);
+        Assert.assertNotNull(result);
+    }
+
+    @Test(expected = StateMachineException.class)
+    public void testTransitInternalException() {
+        Map<States, State<States, Events>> stateMap = new HashMap<>();
+        Transition<States, Events> newTransition = new TransitionImpl<>();
+        newTransition.setSource(StateHelper.getState(stateMap,States.STATE1));
+        newTransition.setTarget(StateHelper.getState(stateMap,States.STATE2));
+        newTransition.setEvent(Events.EVENT1);
+        newTransition.setType(TransitionType.INTERNAL);
+        newTransition.setCondition(context -> true, "true");
+        newTransition.setAction(action -> new Object());
+        Object result = newTransition.transitWithResult(new Object(), true);
+        Assert.assertNotNull(result);
     }
 }
