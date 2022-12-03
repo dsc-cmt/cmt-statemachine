@@ -69,7 +69,7 @@ public interface Transition<S, E>{
      */
     void verify();
 
-    <T,C,R> T transitWithResult(C cond, R request);
+    <T,C,R> T transitWithResult(C cond, R request, boolean checkCondition);
 
     String getConditionDesc();
 }
