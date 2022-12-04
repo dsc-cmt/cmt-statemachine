@@ -55,19 +55,21 @@ public interface Transition<S, E>{
     /**
      * Do transition from source state to target state.
      *
+     * @param request
+     * @param checkCondition check condition
      * @return the target state
      */
 
-    <C,T>  State<S,E> transit(C request);
+    <C,T>  State<S,E> transit(C request, boolean checkCondition);
 
-    <T, C> T transitWithResult(C request);
+    <T, C> T transitWithResult(C request, boolean checkCondition);
 
     /**
      * Verify transition correctness
      */
     void verify();
 
-    <T,C,R> T transitWithResult(C cond, R request);
+    <T,C,R> T transitWithResult(C cond, R request, boolean checkCondition);
 
     String getConditionDesc();
 }
