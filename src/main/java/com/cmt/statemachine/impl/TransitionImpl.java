@@ -4,13 +4,13 @@ import com.cmt.statemachine.*;
 
 /**
  * TransitionImpl。
- *
+ * <p>
  * This should be designed to be immutable, so that there is no thread-safe risk
  *
  * @author Frank Zhang
  * @date 2020-02-07 10:32 PM
  */
-public class TransitionImpl<S,E> implements Transition<S,E> {
+public class TransitionImpl<S, E> implements Transition<S, E> {
 
     private State<S, E> source;
 
@@ -22,7 +22,7 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
 
     private String conditionDesc;
 
-    private Action<?,?> action;
+    private Action<?, ?> action;
 
     private TransitionType type = TransitionType.EXTERNAL;
 
@@ -78,56 +78,57 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
     }
 
     @Override
-    public <C,T> Action<C,T> getAction() {
-        return (Action<C,T>) this.action;
+    public <C, T> Action<C, T> getAction() {
+        return (Action<C, T>) this.action;
     }
 
     @Override
-    public <C,T> void setAction(Action<C,T> action) {
+    public <C, T> void setAction(Action<C, T> action) {
         this.action = action;
     }
 
     @Override
-    public <C,T> State<S, E> transit(C request) {
-        Debugger.debug("Do transition: "+this);
+    public <C, T> State<S, E> transit(C request, boolean checkCondition) {
+        Debugger.debug("Do transition: " + this);
         this.verify();
 
         Condition<C> cond = (Condition<C>) condition;
-        Action<C,T> ac = (Action<C,T>) action;
-        if(cond == null || cond.isSatisfied(request)){
-            setNextState(target,request);
-            if(ac != null){
+        Action<C, T> ac = getAction();
+        if (!checkCondition || cond == null || cond.isSatisfied(request)) {
+            setNextState(target, request);
+            if (ac != null) {
                 ac.execute(request);
             }
             return target;
         }
 
-        Debugger.debug("Condition is not satisfied, stay at the "+source+" state ");
-        setNextState(source,request);
+        Debugger.debug("Condition is not satisfied, stay at the " + source + " state ");
+        setNextState(source, request);
         return source;
     }
 
     @Override
-    public <T, C> T transitWithResult(C request) {
-        Debugger.debug("Do transition: "+this);
+    public <T, C> T transitWithResult(C request, boolean checkCondition) {
+        Debugger.debug("Do transition: " + this);
         this.verify();
         Condition<C> cond = (Condition<C>) condition;
-        Action<C,T> ac = (Action<C,T>) action;
-        return nullIfNotSatisfied(cond,request,ac,request);
+        Action<C, T> ac = (Action<C, T>) action;
+
+        return nullIfNotSatisfied(cond, request, ac, request, checkCondition);
     }
 
     @Override
     public final String toString() {
-        return source + "-[" + event.toString() +", "+type+"]->" + target;
+        return source + "-[" + event.toString() + ", " + type + "]->" + target;
     }
 
     @Override
-    public boolean equals(Object anObject){
-        if(anObject instanceof Transition){
-            Transition other = (Transition)anObject;
-            if(this.event.equals(other.getEvent())
+    public boolean equals(Object anObject) {
+        if (anObject instanceof Transition) {
+            Transition other = (Transition) anObject;
+            if (this.event.equals(other.getEvent())
                     && this.source.equals(other.getSource())
-                    && this.target.equals(other.getTarget())){
+                    && this.target.equals(other.getTarget())) {
                 return true;
             }
         }
@@ -136,19 +137,19 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
 
     @Override
     public void verify() {
-        if(type== TransitionType.INTERNAL && source != target) {
+        if (type == TransitionType.INTERNAL && source != target) {
             throw new StateMachineException(String.format("Internal transition source state '%s' " +
                     "and target state '%s' must be same.", source, target));
         }
     }
 
     @Override
-    public <T, C, R> T transitWithResult(C cond, R request) {
-        Debugger.debug("Do transition: "+this);
+    public <T, C, R> T transitWithResult(C cond, R request, boolean checkCondition) {
+        Debugger.debug("Do transition: " + this);
         this.verify();
         Condition<C> func = (Condition<C>) condition;
-        Action<R,T> ac = (Action<R,T>) action;
-        return nullIfNotSatisfied(func,cond,ac,request);
+        Action<R, T> ac = (Action<R, T>) action;
+        return nullIfNotSatisfied(func, cond, ac, request, checkCondition);
     }
 
     @Override
@@ -156,21 +157,22 @@ public class TransitionImpl<S,E> implements Transition<S,E> {
         return conditionDesc;
     }
 
-    private <T, C, R> T nullIfNotSatisfied(Condition<C> func, C cond, Action<R,T> ac, R request) {
-        if(func == null || func.isSatisfied(cond)){
+    private <T, C, R> T nullIfNotSatisfied(Condition<C> func, C cond, Action<R, T> ac, R request,
+                                           boolean checkCondition) {
+        if (!checkCondition || func == null || func.isSatisfied(cond)) {
             T t = null;
-            setNextState(target,request);
-            if(ac != null){
+            setNextState(target, request);
+            if (ac != null) {
                 t = ac.execute(request);
             }
             return t;
         }
-        setNextState(source,request);
+        setNextState(source, request);
         return null;
     }
 
-    private <C> void setNextState(State<S, E> s, C request){
-        if(request instanceof StateAware){
+    private <C> void setNextState(State<S, E> s, C request) {
+        if (request instanceof StateAware) {
             ((StateAware) request).setNextState(s.getId());
         }
     }

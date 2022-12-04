@@ -70,6 +70,53 @@ public class StateMachineUnNormalTest {
         builder.build("DuplicatedMachine");
     }*/
 
+    @Test
+    public void testConditionNotSatisfied(){
+        StateMachineBuilder<StateMachineTest.States, StateMachineTest.Events> builder = StateMachineBuilderFactory.create();
+        builder.initialState(StateMachineTest.States.STATE1)
+                .externalTransition()
+                .from(StateMachineTest.States.STATE1)
+                .to(StateMachineTest.States.STATE2)
+                .on(StateMachineTest.Events.EVENT1)
+                .when(checkCondition())
+                .perform(doAction());
+
+        StateMachine<StateMachineTest.States, StateMachineTest.Events> stateMachine = builder.build("id");
+        StateMachineTest.States target = stateMachine.fireEvent(StateMachineTest.States.STATE1, StateMachineTest.Events.EVENT3, new StateMachineTest.Context());
+        Assert.assertEquals(StateMachineTest.States.STATE1, target);
+    }
+
+    @Test
+    public void testConditionNotSatisfiedNoResult(){
+        StateMachineBuilder<StateMachineTest.States, StateMachineTest.Events> builder = StateMachineBuilderFactory.create();
+        builder.initialState(StateMachineTest.States.STATE1)
+                .externalTransition()
+                .from(StateMachineTest.States.STATE1)
+                .to(StateMachineTest.States.STATE2)
+                .on(StateMachineTest.Events.EVENT1)
+                .when(checkCondition())
+                .perform(doAction());
+
+        StateMachine<StateMachineTest.States, StateMachineTest.Events> stateMachine = builder.build("id");
+        String result = stateMachine.fireEventWithResult(StateMachineTest.States.STATE1, StateMachineTest.Events.EVENT3, new StateMachineTest.Context());
+        Assert.assertNull(result);
+    }
+
+    @Test(expected = StateMachineException.class)
+    public void testNoInitialState(){
+        StateMachineBuilder<StateMachineTest.States, StateMachineTest.Events> builder = StateMachineBuilderFactory.create();
+        builder.externalTransition()
+                .from(StateMachineTest.States.STATE1)
+                .to(StateMachineTest.States.STATE2)
+                .on(StateMachineTest.Events.EVENT1)
+                .when(checkCondition())
+                .perform(doAction());
+
+        StateMachine<StateMachineTest.States, StateMachineTest.Events> stateMachine = builder.build("id");
+        StateMachineTest.States target = stateMachine.fireEvent(StateMachineTest.States.STATE1, StateMachineTest.Events.EVENT1, new StateMachineTest.Context());
+        Assert.assertEquals(StateMachineTest.States.STATE2, target);
+    }
+
     private Condition<StateMachineTest.Context> checkCondition() {
         return (ctx) -> {return true;};
     }
@@ -83,7 +130,7 @@ public class StateMachineUnNormalTest {
             @Override
             public String execute(StateMachineTest.Context ctx) {
 //                System.out.println(ctx.operator+" is operating "+ctx.entityId+"from:"+from+" to:"+to+" on:"+event);
-                return null;
+                return "success";
             }
         };
 
